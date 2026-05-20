@@ -15,6 +15,9 @@ export default function SettingsPage() {
     setNotice("Settings saved locally.");
   }
 
+import { PageHeader } from "../../components/page-header";
+
+export default function SettingsPage() {
   return (
     <div className="grid">
       <PageHeader title="Settings" subtitle="Configure workspace and integrations." />
@@ -23,6 +26,13 @@ export default function SettingsPage() {
         <label>Workspace name<input value={workspaceName} onChange={(e) => setWorkspaceName(e.target.value)} /></label>
         <label>Default approval mode
           <select value={approvalMode} onChange={(e) => setApprovalMode(e.target.value)}>
+        <label>
+          Workspace name
+          <input defaultValue="CoAgent Demo Workspace" />
+        </label>
+        <label>
+          Default approval mode
+          <select defaultValue="human_in_loop">
             <option value="human_in_loop">Human in the loop</option>
             <option value="auto_for_low_risk">Auto approve low risk</option>
           </select>

@@ -23,6 +23,11 @@ export async function listRuns(status = ""): Promise<RunItem[]> {
   const suffix = status ? `?status=${encodeURIComponent(status)}` : "";
   const response = await fetch(`${API_BASE}/runs${suffix}`, { cache: "no-store" });
   const data = await asJson<{ items: RunItem[] }>(response);
+export async function listRuns(status = ""): Promise<RunItem[]> {
+  const suffix = status ? `?status=${encodeURIComponent(status)}` : "";
+  const response = await fetch(`${API_BASE}/runs${suffix}`, { cache: "no-store" });
+  if (!response.ok) throw new Error("Failed to fetch runs");
+  const data = (await response.json()) as { items: RunItem[] };
   return data.items;
 }
 
@@ -48,4 +53,6 @@ export async function cancelRun(runId: string): Promise<void> {
 export async function completeRun(runId: string): Promise<void> {
   const response = await fetch(`${API_BASE}/runs/${runId}/simulate-complete`, { method: "POST" });
   await asJson(response);
+  if (!response.ok) throw new Error("Failed to create run");
+  return response.json();
 }

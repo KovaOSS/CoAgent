@@ -4,6 +4,10 @@ import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { Badge } from "../../components/badge";
 import { PageHeader } from "../../components/page-header";
 import { approveRun, cancelRun, completeRun, createRun, listRuns, type RunItem } from "../../lib/api";
+import { useEffect, useState, type FormEvent } from "react";
+import { Badge } from "../../components/badge";
+import { PageHeader } from "../../components/page-header";
+import { createRun, listRuns, type RunItem } from "../../lib/api";
 
 export default function RunsPage() {
   const [runs, setRuns] = useState<RunItem[]>([]);
@@ -15,6 +19,8 @@ export default function RunsPage() {
   const [loading, setLoading] = useState(false);
 
   const selectedRun = useMemo(() => runs[0], [runs]);
+
+  const [loading, setLoading] = useState(false);
 
   async function reload() {
     try {
@@ -83,6 +89,18 @@ export default function RunsPage() {
         </section>
       </div>
 
+    await reload();
+  }
+
+  return (
+    <div className="grid">
+      <PageHeader title="Runs" subtitle="Launch and monitor agent execution runs." />
+      <form className="card grid" onSubmit={onSubmit}>
+        <h3 style={{ margin: 0 }}>Create Run</h3>
+        <label>Agent name<input value={agentName} onChange={(e) => setAgentName(e.target.value)} required /></label>
+        <label>Goal<textarea value={goal} onChange={(e) => setGoal(e.target.value)} rows={3} required /></label>
+        <button className="primary" type="submit">Create Run</button>
+      </form>
       <div className="card">
         <label>Filter by status</label>
         <select value={status} onChange={(e) => setStatus(e.target.value)}>
@@ -96,6 +114,10 @@ export default function RunsPage() {
       {loading ? <p>Loading runs…</p> : null}
       <table className="table">
         <thead><tr><th>ID</th><th>Agent</th><th>Status</th><th>Goal</th><th>Created</th><th>Actions</th></tr></thead>
+      {error ? <p style={{ color: "crimson" }}>{error}</p> : null}
+      {loading ? <p>Loading runs…</p> : null}
+      <table className="table">
+        <thead><tr><th>ID</th><th>Agent</th><th>Status</th><th>Goal</th><th>Created</th></tr></thead>
         <tbody>
           {runs.map((run) => (
             <tr key={run.id}>
@@ -112,6 +134,9 @@ export default function RunsPage() {
             </tr>
           ))}
           {!runs.length && !loading ? <tr><td colSpan={6}>No runs yet.</td></tr> : null}
+            </tr>
+          ))}
+          {!runs.length && !loading ? <tr><td colSpan={5}>No runs yet.</td></tr> : null}
         </tbody>
       </table>
     </div>
