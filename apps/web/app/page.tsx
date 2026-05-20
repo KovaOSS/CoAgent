@@ -1,18 +1,29 @@
 import { PageHeader } from "../components/page-header";
+import { StatCard } from "../components/stat-card";
+
+const recentEvents = [
+  "Lead Research Agent template created",
+  "Support Triage Agent draft updated",
+  "Workspace setup completed",
+];
 
 export default function DashboardPage() {
   return (
     <div className="grid">
       <PageHeader title="Dashboard" subtitle="Track CoAgent usage, throughput, and approvals." />
       <div className="grid cols-3">
-        <div className="card"><h3>Total Runs</h3><p>0</p></div>
-        <div className="card"><h3>Approval Queue</h3><p>0</p></div>
-        <div className="card"><h3>Success Rate</h3><p>0%</p></div>
+        <StatCard label="Total Runs (7d)" value="12" />
+        <StatCard label="Pending Approvals" value="3" />
+        <StatCard label="Successful Runs" value="9" />
       </div>
-      <div className="card">
-        <h3>Next step</h3>
-        <p>Create your first agent and launch a run from the Runs page.</p>
-      </div>
+      <section className="card">
+        <h3 style={{ marginTop: 0 }}>Recent events</h3>
+        <ul style={{ marginBottom: 0 }}>
+          {recentEvents.map((event) => (
+            <li key={event}>{event}</li>
+          ))}
+        </ul>
+      </section>
     </div>
   );
 }

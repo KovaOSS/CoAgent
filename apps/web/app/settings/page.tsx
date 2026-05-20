@@ -10,10 +10,17 @@ export default function SettingsPage() {
           Workspace name
           <input defaultValue="CoAgent Demo Workspace" />
         </label>
+        <label>
+          Default approval mode
+          <select defaultValue="human_in_loop">
+            <option value="human_in_loop">Human in the loop</option>
+            <option value="auto_for_low_risk">Auto approve low risk</option>
+          </select>
+        </label>
       </section>
       <section className="card grid">
         <h3 style={{ margin: 0 }}>Integrations</h3>
-        <p style={{ margin: 0 }}>Coming next: Slack, Gmail, HubSpot, Notion.</p>
+        <div className="row"><button type="button">Connect Slack</button><button type="button">Connect Gmail</button><button type="button">Connect HubSpot</button></div>
       </section>
     </div>
   );

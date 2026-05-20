@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
+import { Badge } from "../../components/badge";
 import { PageHeader } from "../../components/page-header";
 import { createRun, listRuns, type RunItem } from "../../lib/api";
 
@@ -10,17 +11,23 @@ export default function RunsPage() {
   const [agentName, setAgentName] = useState("Lead Research Agent");
   const [goal, setGoal] = useState("Research target account and draft intro email");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   async function reload() {
     try {
+      setLoading(true);
       setError("");
       setRuns(await listRuns(status));
     } catch {
       setError("Could not reach API. Start backend on port 8000.");
+    } finally {
+      setLoading(false);
     }
   }
 
-  useEffect(() => { void reload(); }, [status]);
+  useEffect(() => {
+    void reload();
+  }, [status]);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -33,9 +40,9 @@ export default function RunsPage() {
       <PageHeader title="Runs" subtitle="Launch and monitor agent execution runs." />
       <form className="card grid" onSubmit={onSubmit}>
         <h3 style={{ margin: 0 }}>Create Run</h3>
-        <input value={agentName} onChange={(e) => setAgentName(e.target.value)} required />
-        <textarea value={goal} onChange={(e) => setGoal(e.target.value)} rows={3} required />
-        <button type="submit">Create Run</button>
+        <label>Agent name<input value={agentName} onChange={(e) => setAgentName(e.target.value)} required /></label>
+        <label>Goal<textarea value={goal} onChange={(e) => setGoal(e.target.value)} rows={3} required /></label>
+        <button className="primary" type="submit">Create Run</button>
       </form>
       <div className="card">
         <label>Filter by status</label>
@@ -46,11 +53,20 @@ export default function RunsPage() {
         </select>
       </div>
       {error ? <p style={{ color: "crimson" }}>{error}</p> : null}
+      {loading ? <p>Loading runs…</p> : null}
       <table className="table">
         <thead><tr><th>ID</th><th>Agent</th><th>Status</th><th>Goal</th><th>Created</th></tr></thead>
         <tbody>
-          {runs.map((run) => (<tr key={run.id}><td>{run.id}</td><td>{run.agent_name}</td><td>{run.status}</td><td>{run.goal}</td><td>{new Date(run.created_at).toLocaleString()}</td></tr>))}
-          {!runs.length ? <tr><td colSpan={5}>No runs yet.</td></tr> : null}
+          {runs.map((run) => (
+            <tr key={run.id}>
+              <td>{run.id}</td>
+              <td>{run.agent_name}</td>
+              <td><Badge>{run.status}</Badge></td>
+              <td>{run.goal}</td>
+              <td>{new Date(run.created_at).toLocaleString()}</td>
+            </tr>
+          ))}
+          {!runs.length && !loading ? <tr><td colSpan={5}>No runs yet.</td></tr> : null}
         </tbody>
       </table>
     </div>
